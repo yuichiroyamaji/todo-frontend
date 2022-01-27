@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>ToDo List</title>
+    <meta http-equiv="content-type" charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div id="app" class="row container d-flex justify-content-center">
+                <div class="col-md-12">
+                    <div class="card px-3">
+                        <div class="card-body">
+                            <h1 id="text"></h1>
+                            <div class="members">
+                                <div v-for="(member, index) in members" :key="member.id">
+                                    <!-- <div :id="member.id" :class="[index == 0 ? 'image selected' : 'image']" :style="{ backgroundImage: 'url(' + member.img_path + ')' }" @click=""> -->
+                                    <!-- <div :id="member.id" :class="[index == 0 ? {'image': true, 'selected': isUserSelected == index} : '', {'image': true, 'selected': isUserSelected == index}]" :style="{ backgroundImage: 'url(' + member.img_path + ')' }" @click="clickMember(index, member.id)"> -->
+                                    <div :id="member.id" :class="{'image': true, 'selected': isUserSelected == index}" :style="{ backgroundImage: 'url(' + member.img_path + ')' }" @click="clickMember(index, member.id)">
+                                        <span class="name">{{ member.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="test-members">
+                                
+                            </div>
+                            
+                            <h4 class="card-title">Todo List Demo</h4>
+                            <div class="add-items d-flex">
+                                <textarea class="form-control form-control-title todo-title-input" placeholder="タスクのタイトルを入力してください" v-model="taskTitle"></textarea>
+                                <textarea class="form-control todo-content-input" placeholder="タスクの内容を入力してください" v-model="taskContent"></textarea>
+                                <button class="add btn font-weight-bold todo-add" @click="clickAddBtn()">Add</button>
+                            </div>
+                            <div class="list-wrapper">
+                                <ul class="d-flex flex-column-reverse todo-list" v-for="(task, index) in tasks" :key="task.id">
+                                    <!-- <li :class="{ 'task-list':true, 'completed': task.task_status }"> -->
+                                    <li :class="{ 'task-list':true, 'completed': isCheckboxChecked == index }">
+                                        <div class="form-check">
+                                            <!-- <input v-if="task.task_status == 0" class="checkbox" type="checkbox" @click="isCheckboxChecked=!isCheckboxChecked"> -->
+                                            <input v-if="task.task_status == 0" class="checkbox" type="checkbox" @change="clickCheckbox(index, task.id, $event)">
+                                            <input v-else class="checkbox" type="checkbox" checked="" @change="clickCheckbox(index, task.id, $event)">
+                                            <span class="task-id d-none">{{ task.id }}</span>
+                                            <span class="task-title" @click="clickTaskTitle(task.id, task.task_title, task.task_content)">{{ task.task_title }}</span>
+                                            <i class="input-helper"></i></label>
+                                            <span class="task-content d-none">{{ task.task_content }}</span>
+                                        </div> <i class="remove mdi mdi-close-circle-outline" @click="clickRemoveBtn(task.id, $event)"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- <div class="add-items d-flex"></div><button class="add btn btn-primary font-weight-bold todo-fix">確定</button></div> -->
+                        </div>
+                    </div>
+                    
+
+                    <button type="button" class="btn btn-primary modal-init d-none" data-toggle="modal" data-target="#exampleModalCenter"></button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body pb-0">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body pt-0" style="border-bottom: 1px solid #dee2e6;">
+                                    <h6 class="modal-title">タスクタイトル</h6>
+                                    <textarea class="w-100" v-model="editTaskTitle"></textarea>
+                                </div>
+                                <div class="modal-body">
+                                    <h6 class="modal-title">タスク内容</h6>
+                                    <textarea class="w-100" style="height: 200px;" v-model="editTaskContent"></textarea>
+                                    <p id="ContentIndexNum" class="d-none"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
+                                    <button type="button" class="btn btn-primary save-changes" @click="clickSaveChanges()">変更を保存</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form action="" method="post">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
+</body>
+</html>
