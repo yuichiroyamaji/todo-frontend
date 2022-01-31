@@ -1,3 +1,4 @@
+// const domain = 'http://localhost:8080';
 const domain = 'https://hereis.myyuichiroyamajitododemo.com';
 const username = 'rachel.green@gmail.com';
 const password = 'e2KZ75xTcYZKy5o8';

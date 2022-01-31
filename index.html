@@ -42,7 +42,8 @@
                             <div class="list-wrapper">
                                 <ul class="d-flex flex-column-reverse todo-list" v-for="(task, index) in tasks" :key="task.id">
                                     <!-- <li :class="{ 'task-list':true, 'completed': task.task_status }"> -->
-                                    <li :class="{ 'task-list':true, 'completed': isCheckboxChecked == index }">
+                                    <!-- <li :class="{ 'task-list':true, 'completed': isCheckboxChecked == index }"> -->
+                                    <li :class="{ 'task-list':true }">
                                         <div class="form-check">
                                             <!-- <input v-if="task.task_status == 0" class="checkbox" type="checkbox" @click="isCheckboxChecked=!isCheckboxChecked"> -->
                                             <input v-if="task.task_status == 0" class="checkbox" type="checkbox" @change="clickCheckbox(index, task.id, $event)">
